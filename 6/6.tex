@@ -6,7 +6,7 @@
 
 
 \begin{document}
-\lecture{6}{September 20}{Sasha Rush}{Meena Jagadeesan, Yufeng Ling, Tomoka Kan, Wenting Cai}{Exponential Families}
+\lecture{6}{September 20}{Sasha Rush}{Meena Jagadeesan, Yufeng Ling, Tomoka Kan, Wenting Cai, Elana Simon}{Exponential Families}
 
 \subsection{Introduction}
 (Wainwright and Jordan (textbook) presents a more detailed coverage of the material in this lecture.)
@@ -83,7 +83,13 @@ $$\theta = \begin{bmatrix}
 $$
 where $\sum_{c} \mu_c = 1$.
 
-Side note: Writing out in overcomplete form usually comes with some restraints.
+\medskip
+
+In the minimal form, the components of the sufficient statistics are linearly independent and the natural parameters are uniquely identifiable. In the over-complete form, there is a linear dependence between the features so the natural parameters not uniquely identifiable.
+
+\medskip
+
+Note: Writing out in overcomplete form usually comes with some restraints.
 
 \subsubsection{Univariate Gaussians}
 
@@ -105,7 +111,14 @@ A(\theta) &= - \frac12 \log( -2 \theta_2) - \frac{\theta_1^2}{4 \theta_2}
 \end{align*}
 
 \subsubsection{Bad distributions}
-Two simple distributions that do not fit this form are the uniform distribution $\text{Uniform}(0,1)$ (check this as an exercise), and the Student-T distribution.
+Two simple distributions that do not fit this form are the uniform distribution and the Student's t-distribution.
+
+\medskip
+
+
+In an exponential family, $h(x)$ is the scaling constant that captures the support of the distribution. We see that $h$ can only depend on x, and thus the support of an exponential family must remain the same regardless of the parameters of the distribution.
+
+For example, the parameters $a,b$ of a uniform distribution $\trm{Unif}(a,b)$ are precisely what defines the support of the distribution, so it could not be encoded as an exponential family. However, if a and b were left as constants (as in the standard normal), then the scale would not depend on any parameters, but then we also wouldn't be looking at a \textit{family} of distributions, just a single distribution.
 
 \subsection{Properties of Exponential Families}
 Most inference problems involve a mapping between natural parameters and mean parameters, so this is a natural framework. 
@@ -115,7 +128,7 @@ Here are three properties of exponential families:
 
 \paragraph{Property 1} Derivatives of $A(\theta)$ provide us the cumulants of the distribution $\mathbb{E}(\phi(x))$, $\text{var}(\phi(x))$:
 \begin{proof}
-For univariate, first order:
+For univariate (partially taken from Murphy):
 \begin{align*}
 \frac{d A}{d \theta} &= \frac{d}{d\theta}(\log Z(\theta)) \\
 &= \frac{d}{d \theta} \log \underbrace{\left(\int \exp\{\theta \phi\} h(x) dx\right)}_{\text{needed to integrate to $1$}} \\
@@ -123,9 +136,19 @@ For univariate, first order:
 &= \frac{\int\phi \exp\{\theta\phi\}h(x) dx}{\exp(A(\theta))} \\
 &= \int \phi(x) \underbrace{\exp(\theta \phi(x) - A(\theta)) h(x)}_{p(x)} dx\\
 &= \int \phi(x) p(x) dx \\
-&= \mathbb{E}(\phi(x))
+&= \mathbb{E}(\phi(x))\\
+\frac{d^2A}{d\theta^2} &= \int \phi(x)\exp(\theta\phi(x) - A(\theta))h(x)(h(x)(\phi(x) - A'(\theta))dx \\
+&= \int \phi(x)p(x)(\phi(x) - A'(\theta))dx\\
+&= \int \phi^2(x)p(x)dx - \underbrace{A'(\theta)}_{\frac{dA}{d\theta}=\mathbb{E}(\phi(x))} \int \phi(x)p(x)dx \\
+&= \mathbb{E}(\phi^2(X)) - \mathbb{E}(\phi(x))^2 \\
+&= \text{var}(\phi(x))
 \end{align*}
-The same property holds for multivariates (refer to textbook for proof). 
+The same property holds for multivariates. In this case we have:
+\begin{align*}
+\frac{\partial^2A}{\partial \theta_i \partial\theta_j} &= \mathbb{E}(\phi_i(x)\phi_j(x)) - \mathbb{E}(\phi_i(x))\mathbb{E}(\phi_j(x))\\
+\nabla^2 A(\theta) &= \text{cov}(\phi(x))
+\end{align*}
+
 \end{proof}
 
 \textbf{Bernoulli}: 
